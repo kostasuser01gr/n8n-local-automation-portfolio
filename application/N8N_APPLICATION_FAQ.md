@@ -1,5 +1,7 @@
 # n8n Application FAQ
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Is this a real implementation?
 
 Yes. The workflows were executed in a local self-hosted n8n environment, and their outputs were verified in PostgreSQL.

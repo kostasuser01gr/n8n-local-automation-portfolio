@@ -1,5 +1,7 @@
 # n8n Application Master Package
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Positioning
 
 This application package presents a completed local-first n8n portfolio as evidence of workflow engineering, self-hosted infrastructure ownership, PostgreSQL debugging, release packaging, security awareness, and clear technical communication.

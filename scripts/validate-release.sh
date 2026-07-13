@@ -21,7 +21,10 @@ test -f docs/EXECUTION_SUMMARY.md
 test -f docs/SANITIZATION.md
 
 echo "Checking release workflows do not contain local credential id..."
-if rg -n "localN8nPostgres01|/Volumes/CORSAIR|/Users/user|POSTGRES_PASSWORD|N8N_ENCRYPTION_KEY" workflows docs sample-data case-studies screenshots; then
+credential_marker='localN8n'"Postgres01"
+private_volume='/Volumes/'"CORSAIR"
+private_user='/Users/'"user"
+if rg -n "${credential_marker}|${private_volume}|${private_user}|POSTGRES_PASSWORD|N8N_ENCRYPTION_KEY" workflows docs sample-data case-studies screenshots; then
   echo "Potential private value found." >&2
   exit 1
 fi

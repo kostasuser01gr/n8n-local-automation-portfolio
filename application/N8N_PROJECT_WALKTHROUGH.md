@@ -1,5 +1,7 @@
 # n8n Project Walkthrough
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Purpose
 
 This walkthrough explains how to present the portfolio in a technical review without overstating what was built. The core message is simple: three n8n workflows were executed locally, persisted data to PostgreSQL, and were packaged with evidence and safety checks.

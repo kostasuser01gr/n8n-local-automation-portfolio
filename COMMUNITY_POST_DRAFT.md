@@ -25,4 +25,4 @@ The release package includes:
 
 The main takeaway: a workflow package is easier to trust when it includes evidence. Screenshots help, but database counts, sanitized exports, and repeatable validation scripts make the package much easier to review.
 
-Repository: `[link after publication]`
+Repository: `https://github.com/kostasuser01gr/n8n-local-automation-portfolio`

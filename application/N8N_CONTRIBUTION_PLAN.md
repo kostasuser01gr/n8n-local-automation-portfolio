@@ -1,5 +1,7 @@
 # n8n Contribution Plan
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Goal
 
 Use the verified local portfolio as a base for useful n8n contributions in templates, documentation, examples, support workflows, and community education.

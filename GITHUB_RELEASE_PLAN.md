@@ -2,30 +2,32 @@
 
 ## Repository Description
 
-Verified local-first n8n portfolio with PostgreSQL-backed workflows, screenshots, validation scripts, and sanitized release exports.
+Verified local-first n8n automation portfolio with PostgreSQL persistence, Docker/Colima self-hosting, workflow evidence, security checks, and three executed case studies.
 
 ## Topics
 
 - `n8n`
+- `automation`
 - `workflow-automation`
+- `workflow-engineering`
+- `self-hosted`
 - `postgresql`
 - `docker`
 - `colima`
-- `self-hosted`
 - `local-first`
-- `automation-engineering`
-- `workflow-templates`
-- `release-engineering`
+- `ai-workflows`
+- `ollama`
 - `developer-tools`
-- `technical-portfolio`
-- `data-pipelines`
-- `no-code`
-- `low-code`
-- `workflow-debugging`
+- `operations-automation`
+- `macos`
+- `open-source`
+- `portfolio`
 
 ## Social Preview Text
 
 Three local-first n8n workflows with PostgreSQL persistence, verified execution evidence, sanitized exports, screenshots, validation scripts, and application materials.
+
+Preview asset: `assets/social-preview.png`
 
 ## Suggested First Release
 

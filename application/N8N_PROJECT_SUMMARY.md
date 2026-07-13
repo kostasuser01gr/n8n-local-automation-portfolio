@@ -1,5 +1,7 @@
 # n8n Project Summary
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Overview
 
 This portfolio demonstrates local-first n8n workflow engineering with PostgreSQL persistence, Docker-based self-hosting, execution evidence, release sanitization, and reviewer-focused documentation.

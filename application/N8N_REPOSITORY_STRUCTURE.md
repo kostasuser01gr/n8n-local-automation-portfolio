@@ -1,5 +1,7 @@
 # n8n Repository Structure
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Review Entry Points
 
 Start here:

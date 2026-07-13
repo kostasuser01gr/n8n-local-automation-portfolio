@@ -10,6 +10,9 @@
 | Screenshot inventory | [VERIFIED] |
 | Release package inventory | [VERIFIED] |
 | Application package | [VERIFIED] |
+| Community package | [VERIFIED] |
+| Demo package | [VERIFIED] |
+| Social preview asset | [VERIFIED] |
 | Workflow JSON validation | [VERIFIED] |
 | Sample JSON validation | [VERIFIED] |
 | Markdown review | [VERIFIED] |

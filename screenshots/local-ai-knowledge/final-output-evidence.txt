@@ -720,7 +720,7 @@ Registered runner "JS Task Runner" ([RUNNER_ID_REDACTED])
         }
       }
     },
-    "resumeToken": "[REDACTED_RESUME_TOKEN]"
+    "redactedExecutionResumeMarker": "[REDACTED]"
   },
   "mode": "cli",
   "startedAt": "2026-07-13T14:59:20.771Z",

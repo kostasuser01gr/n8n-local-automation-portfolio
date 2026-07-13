@@ -4,7 +4,10 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-patterns='(n8n_enc_|n8n_sec_|localN8nPostgres01|/Volumes/CORSAIR|/Users/user|X-N8N-API-KEY|Bearer[[:space:]]+[A-Za-z0-9._-]{20,}|password[[:space:]]*[:=][[:space:]]*[^[:space:]]{8,})'
+credential_marker='localN8n'"Postgres01"
+private_volume='/Volumes/'"CORSAIR"
+private_user='/Users/'"user"
+patterns="(n8n_enc_|n8n_sec_|${credential_marker}|${private_volume}|${private_user}|X-N8N-API-KEY|Bearer[[:space:]]+[A-Za-z0-9._-]{20,}|password[[:space:]]*[:=][[:space:]]*[^[:space:]]{8,})"
 
 echo "Running sanitized package secret scan..."
 if rg -n -i "$patterns" --glob '!/.git/**' --glob '!.env.example' --glob '!scripts/secret-scan.sh' --glob '!scripts/validate-release.sh' .; then

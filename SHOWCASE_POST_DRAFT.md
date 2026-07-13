@@ -31,4 +31,4 @@ What it does not claim:
 
 The part I found most valuable was debugging the local execution path. A workflow package becomes much stronger when it captures not only the final JSON export, but also the issues encountered, the fixes applied, and the evidence that the workflow persisted data successfully.
 
-Repository: `[link after publication]`
+Repository: `https://github.com/kostasuser01gr/n8n-local-automation-portfolio`

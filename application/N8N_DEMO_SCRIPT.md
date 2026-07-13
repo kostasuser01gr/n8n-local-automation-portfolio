@@ -1,5 +1,7 @@
 # n8n Demo Script
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Demo Goal
 
 Show that the portfolio is a verified local n8n implementation with executed workflows, PostgreSQL persistence, sanitized release artifacts, screenshots, validation, and secret scanning.

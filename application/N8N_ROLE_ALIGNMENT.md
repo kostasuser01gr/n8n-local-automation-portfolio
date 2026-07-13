@@ -1,5 +1,7 @@
 # n8n Role Alignment
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Community Engineer
 
 Relevant evidence:
@@ -20,7 +22,7 @@ Relevant evidence:
 - Three executed n8n workflows.
 - PostgreSQL persistence verified by row counts.
 - Credential assignment and workflow import/export handling.
-- Runtime troubleshooting without redesigning the architecture.
+- Runtime troubleshooting without changing the architecture.
 - File access restriction configuration for local workflow inputs.
 
 How to position it:

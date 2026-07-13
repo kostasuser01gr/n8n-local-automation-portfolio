@@ -1,5 +1,7 @@
 # n8n Technical Highlights
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Workflow Engineering
 
 - Built three local-first n8n workflows with verified PostgreSQL persistence.

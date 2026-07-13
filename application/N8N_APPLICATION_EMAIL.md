@@ -16,7 +16,7 @@ The package includes sanitized workflow exports, PostgreSQL schemas, sample data
 
 The work I would most like to discuss is the debugging path: resolving CLI execution conflicts, configuring scoped n8n file access with `N8N_RESTRICT_FILE_ACCESS_TO`, validating PostgreSQL persistence, and preparing reviewer-safe workflow exports.
 
-Portfolio link: `[GitHub or package link]`
+Portfolio link: `https://github.com/kostasuser01gr/n8n-local-automation-portfolio`
 
 Thank you for your time. I would be glad to walk through the workflows, evidence, and tradeoffs in a technical review.
 

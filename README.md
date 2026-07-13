@@ -34,9 +34,12 @@ flowchart LR
 - `case-studies/`: evidence-based project writeups
 - `docs/`: import, execution, and sanitization notes
 - `application/`: n8n application package materials
+- `community/`: community post and template-submission drafts
+- `demo/`: demo recording plan, shot list, narration, and redaction checklist
 - `scripts/`: release validation and secret scanning
 - `release/`: first-release notes and publication planning
 - `evidence/`: reviewer index for evidence artifacts
+- `assets/social-preview.png`: sanitized GitHub social-preview candidate
 
 ## Screenshots
 

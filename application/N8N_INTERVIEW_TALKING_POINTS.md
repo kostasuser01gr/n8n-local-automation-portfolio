@@ -1,5 +1,7 @@
 # n8n Interview Talking Points
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 ## Thirty-Second Summary
 
 I built and verified a local-first n8n portfolio with three executed workflows backed by PostgreSQL. The package proves workflow execution, persistence, debugging, sanitization, validation, screenshots, backups, and reviewer-ready release preparation.

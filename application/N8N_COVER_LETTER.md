@@ -1,5 +1,7 @@
 # n8n Cover Letter
 
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+
 Hello n8n team,
 
 I am applying for a role where workflow engineering, automation systems, self-hosted operations, and clear technical communication matter. To support the application, I built a local-first n8n portfolio and verified it end to end with PostgreSQL persistence, screenshots, release packaging, backup validation, and secret scanning.
