@@ -1,0 +1,378 @@
+[
+  {
+    "updatedAt": "2026-07-13T14:59:12.154Z",
+    "createdAt": "2026-07-13T14:59:12.154Z",
+    "id": "portfolio-local-ai-knowledge",
+    "name": "Local AI Knowledge and Document Processing Workflow",
+    "description": null,
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "content": "Deterministic base path: local samples, cleanup, metadata, classification, review gate, PostgreSQL persistence.",
+          "height": 220,
+          "width": 500,
+          "color": 4
+        },
+        "id": "knowledge-note-base",
+        "name": "Deterministic Base Path Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -460,
+          -140
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "knowledge-manual-trigger",
+        "name": "Manual Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -420,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { sourceBatch: 'portfolio-knowledge-demo-001', processingMode: 'deterministic', selectedOllamaModel: null, documents: [\n  { document_id: 'doc-local-ai-001', title: 'PostgreSQL Import Reliability Notes', source: 'local-sample', text: 'Use idempotent upserts, audit records, and rejection logs for import workflows. Keep credentials out of workflow JSON. Verify row counts after each execution.' },\n  { document_id: 'doc-local-ai-002', title: 'n8n Community Draft Ideas', source: 'local-sample', text: 'Share a practical case study about self-hosted n8n, PostgreSQL persistence, Docker and Colima debugging, and local-first workflow evidence.' },\n  { document_id: 'doc-local-ai-003', title: 'Operations Runbook Fragment', source: 'local-sample', text: 'Before changing a workflow, take a local backup. After execution, run health checks, query reports, and secret scans before publishing artifacts.' }\n] } }];"
+        },
+        "id": "knowledge-sample-documents",
+        "name": "Local Sample Documents",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const cleaned = ($json.documents || []).map((doc) => ({ ...doc, text: String(doc.text || '').replace(/\\s+/g, ' ').trim() }));\nreturn [{ json: { ...$json, documents: cleaned, recordsSeen: cleaned.length } }];"
+        },
+        "id": "knowledge-cleanup",
+        "name": "Text Cleanup",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          120,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const documents = ($json.documents || []).map((doc) => {\n  const text = doc.text || '';\n  const words = text.split(/\\s+/).filter(Boolean);\n  const topic = /postgres|upsert|row count|credential/i.test(text) ? 'workflow reliability' : /community|case study|feedback/i.test(text) ? 'community publishing' : 'operations runbook';\n  return { ...doc, word_count: words.length, topic, document_type: 'note' };\n});\nreturn [{ json: { ...$json, documents } }];"
+        },
+        "id": "knowledge-metadata",
+        "name": "Metadata Extraction",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          400,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const classified = ($json.documents || []).map((doc) => {\n  const text = `${doc.title} ${doc.text}`.toLowerCase();\n  let classification = 'general-knowledge';\n  let confidence = 0.72;\n  if (text.includes('postgres') || text.includes('workflow')) { classification = 'technical-automation'; confidence = 0.91; }\n  if (text.includes('community') || text.includes('case study')) { classification = 'community-content'; confidence = 0.86; }\n  if (text.includes('runbook') || text.includes('backup')) { classification = 'operations-procedure'; confidence = 0.88; }\n  return { ...doc, classification, confidence };\n});\nreturn [{ json: { ...$json, documents: classified } }];"
+        },
+        "id": "knowledge-classify",
+        "name": "Deterministic Classification",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          700,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const structuredDocuments = ($json.documents || []).map((doc) => {\n  const sentences = String(doc.text || '').split(/(?<=[.!?])\\s+/).filter(Boolean);\n  return {\n    document_id: doc.document_id,\n    title: doc.title,\n    source: doc.source,\n    document_type: doc.document_type,\n    topic: doc.topic,\n    classification: doc.classification,\n    confidence: doc.confidence,\n    summary: sentences.slice(0, 2).join(' '),\n    key_points: sentences.slice(0, 4),\n    action_items: sentences.filter((sentence) => /run|verify|keep|share|take|scan/i.test(sentence)).slice(0, 5),\n    review_required: doc.confidence < 0.85,\n    processing_mode: $json.processingMode,\n    raw_document: doc\n  };\n});\nreturn [{ json: { ...$json, structuredDocuments, recordsPersisted: structuredDocuments.length, reviewRequiredCount: structuredDocuments.filter((doc) => doc.review_required).length } }];"
+        },
+        "id": "knowledge-structured-json",
+        "name": "Structured JSON Generation",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { ...$json, humanReviewGate: { required: $json.reviewRequiredCount > 0, reason: $json.reviewRequiredCount > 0 ? 'one_or_more_documents_below_confidence_threshold' : 'all_documents_above_threshold' } } }];"
+        },
+        "id": "knowledge-review-gate",
+        "name": "Human Review Gate",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1300,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "content": "Optional local Ollama branch is disabled by default. Enable only after verifying a local model and changing processingMode deliberately.",
+          "height": 180,
+          "width": 500,
+          "color": 6
+        },
+        "id": "knowledge-note-ollama",
+        "name": "Optional Ollama Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          900,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { model: $json.selectedOllamaModel || 'select-a-local-model-first', prompt: JSON.stringify($json.structuredDocuments || [], null, 2) } }];"
+        },
+        "id": "knowledge-ollama-prompt",
+        "name": "Optional Ollama Prompt Builder",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          640
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://host.docker.internal:11434/api/generate",
+          "sendBody": true,
+          "contentType": "json",
+          "jsonBody": "={\"model\":$json.model,\"prompt\":$json.prompt,\"stream\":false}"
+        },
+        "id": "knowledge-ollama-generate",
+        "name": "Optional Ollama Generate",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1300,
+          640
+        ],
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "WITH src AS (\n  SELECT * FROM jsonb_to_recordset($1::jsonb) AS x(\n    document_id text,\n    title text,\n    source text,\n    document_type text,\n    topic text,\n    classification text,\n    confidence numeric,\n    summary text,\n    key_points jsonb,\n    action_items jsonb,\n    review_required boolean,\n    processing_mode text,\n    raw_document jsonb\n  )\n), upserted AS (\n  INSERT INTO public.knowledge_documents (\n    document_id, title, source, document_type, topic, classification, confidence,\n    summary, key_points, action_items, review_required, processing_mode, raw_document\n  )\n  SELECT document_id, title, source, document_type, topic, classification, confidence,\n    summary, key_points, action_items, review_required, processing_mode, raw_document\n  FROM src\n  ON CONFLICT (document_id) DO UPDATE SET\n    title = EXCLUDED.title,\n    source = EXCLUDED.source,\n    document_type = EXCLUDED.document_type,\n    topic = EXCLUDED.topic,\n    classification = EXCLUDED.classification,\n    confidence = EXCLUDED.confidence,\n    summary = EXCLUDED.summary,\n    key_points = EXCLUDED.key_points,\n    action_items = EXCLUDED.action_items,\n    review_required = EXCLUDED.review_required,\n    processing_mode = EXCLUDED.processing_mode,\n    raw_document = EXCLUDED.raw_document,\n    updated_at = now()\n  RETURNING id\n)\nSELECT count(*)::integer AS persisted_documents FROM upserted;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[JSON.stringify($json.structuredDocuments || [])]}}"
+          }
+        },
+        "id": "knowledge-persist-documents",
+        "name": "Persist Knowledge Records",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1600,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "INSERT INTO public.knowledge_processing_runs (\n  source_batch, processing_mode, model_name, records_seen,\n  records_persisted, review_required_count, status, summary\n) VALUES ($1, $2, $3, $4, $5, $6, 'completed', $7::jsonb)\nRETURNING id, source_batch, status, created_at;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[$('Human Review Gate').first().json.sourceBatch,$('Human Review Gate').first().json.processingMode,$('Human Review Gate').first().json.selectedOllamaModel,$('Human Review Gate').first().json.recordsSeen,$('Human Review Gate').first().json.recordsPersisted,$('Human Review Gate').first().json.reviewRequiredCount,JSON.stringify($('Human Review Gate').first().json)]}}"
+          }
+        },
+        "id": "knowledge-persist-run",
+        "name": "Persist Processing Run",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1900,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const summary = $('Human Review Gate').first().json;\nreturn [{ json: { status: 'completed', sourceBatch: summary.sourceBatch, processingMode: summary.processingMode, recordsSeen: summary.recordsSeen, recordsPersisted: summary.recordsPersisted, reviewRequiredCount: summary.reviewRequiredCount, humanReviewGate: summary.humanReviewGate } }];"
+        },
+        "id": "knowledge-final-report",
+        "name": "Final Knowledge Report",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2200,
+          120
+        ]
+      }
+    ],
+    "connections": {
+      "Manual Trigger": {
+        "main": [
+          [
+            {
+              "node": "Local Sample Documents",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Local Sample Documents": {
+        "main": [
+          [
+            {
+              "node": "Text Cleanup",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Text Cleanup": {
+        "main": [
+          [
+            {
+              "node": "Metadata Extraction",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Metadata Extraction": {
+        "main": [
+          [
+            {
+              "node": "Deterministic Classification",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deterministic Classification": {
+        "main": [
+          [
+            {
+              "node": "Structured JSON Generation",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured JSON Generation": {
+        "main": [
+          [
+            {
+              "node": "Human Review Gate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Human Review Gate": {
+        "main": [
+          [
+            {
+              "node": "Persist Knowledge Records",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Persist Knowledge Records": {
+        "main": [
+          [
+            {
+              "node": "Persist Processing Run",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Persist Processing Run": {
+        "main": [
+          [
+            {
+              "node": "Final Knowledge Report",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Optional Ollama Prompt Builder": {
+        "main": [
+          [
+            {
+              "node": "Optional Ollama Generate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": false
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionId": "c11710c9-3aed-4e5b-b81b-ba8c5d2ff24a",
+    "activeVersionId": null,
+    "versionCounter": 1,
+    "triggerCount": 0,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "shared": [
+      {
+        "updatedAt": "2026-07-13T14:59:12.154Z",
+        "createdAt": "2026-07-13T14:59:12.154Z",
+        "role": "workflow:owner",
+        "workflowId": "portfolio-local-ai-knowledge",
+        "projectId": "8HbPVW2w2YlXLHZJ",
+        "project": {
+          "updatedAt": "2026-07-12T13:40:37.583Z",
+          "createdAt": "2026-07-05T15:04:20.240Z",
+          "id": "8HbPVW2w2YlXLHZJ",
+          "name": "Konstantinos Foskolakis <kostasfoskolakis19@gmail.com>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "customTelemetryTags": [],
+          "creatorId": "598fe526-8537-4908-a35b-5cf6163385af"
+        }
+      }
+    ],
+    "versionMetadata": {
+      "name": null,
+      "description": null
+    }
+  }
+]

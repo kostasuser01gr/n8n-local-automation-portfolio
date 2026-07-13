@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+data/
+backups/
+*.tar
+*.tar.gz
+*.sql.gz
+*.sqlite
+*.db
+node_modules/
+.DS_Store
+credential*.json
+*credential*
+secrets/

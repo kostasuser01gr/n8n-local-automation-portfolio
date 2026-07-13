@@ -1,0 +1,50 @@
+{
+  "sourceBatch": "portfolio-fleet-demo-001",
+  "records": [
+    {
+      "registration_plate": "N8N-1024",
+      "company": "DemoRent",
+      "vehicle_group": "Compact",
+      "model": "Toyota Yaris Hybrid",
+      "wash_type": "standard",
+      "eco": true,
+      "current_status": "available",
+      "maintenance_flag": false,
+      "damage_flag": false,
+      "fuel_level": 88,
+      "current_location": "Athens Station A",
+      "assigned_employee": "station-demo-01",
+      "notes": "Clean and ready"
+    },
+    {
+      "registration_plate": "OPS-2048",
+      "company": "DemoRent",
+      "vehicle_group": "SUV",
+      "model": "Kia Sportage",
+      "wash_type": "deep",
+      "eco": false,
+      "current_status": "inspection",
+      "maintenance_flag": true,
+      "damage_flag": false,
+      "fuel_level": 41,
+      "current_location": "Athens Service Bay",
+      "assigned_employee": "station-demo-02",
+      "notes": "Maintenance light reported"
+    },
+    {
+      "registration_plate": "QA-4096",
+      "company": "PartnerFleet",
+      "vehicle_group": "Van",
+      "model": "Mercedes Vito",
+      "wash_type": "deep",
+      "eco": false,
+      "current_status": "blocked",
+      "maintenance_flag": false,
+      "damage_flag": true,
+      "fuel_level": 22,
+      "current_location": "Athens Station B",
+      "assigned_employee": "station-demo-03",
+      "notes": "Damage photo required before release"
+    }
+  ]
+}
