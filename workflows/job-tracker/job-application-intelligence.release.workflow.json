@@ -1,7 +1,5 @@
 [
   {
-    "updatedAt": "2026-07-13T14:51:44.465Z",
-    "createdAt": "2026-07-13T14:51:44.465Z",
     "id": "jobAppIntelligence01",
     "name": "Job Application Intelligence Pipeline",
     "description": null,
@@ -443,32 +441,10 @@
     "meta": null,
     "nodeGroups": [],
     "pinData": {},
-    "versionId": "60d7184a-1946-404e-9d96-dc7782daf0a7",
-    "activeVersionId": null,
     "versionCounter": 1,
     "triggerCount": 0,
     "sourceWorkflowId": null,
     "tags": [],
-    "shared": [
-      {
-        "updatedAt": "2026-07-13T14:51:44.465Z",
-        "createdAt": "2026-07-13T14:51:44.465Z",
-        "role": "workflow:owner",
-        "workflowId": "jobAppIntelligence01",
-        "projectId": "8HbPVW2w2YlXLHZJ",
-        "project": {
-          "updatedAt": "2026-07-12T13:40:37.583Z",
-          "createdAt": "2026-07-05T15:04:20.240Z",
-          "id": "8HbPVW2w2YlXLHZJ",
-          "name": "Konstantinos Foskolakis <kostasfoskolakis19@gmail.com>",
-          "type": "personal",
-          "icon": null,
-          "description": null,
-          "customTelemetryTags": [],
-          "creatorId": "598fe526-8537-4908-a35b-5cf6163385af"
-        }
-      }
-    ],
     "versionMetadata": {
       "name": null,
       "description": null

@@ -1,7 +1,5 @@
 [
   {
-    "updatedAt": "2026-07-13T14:59:12.154Z",
-    "createdAt": "2026-07-13T14:59:12.154Z",
     "id": "portfolio-local-ai-knowledge",
     "name": "Local AI Knowledge and Document Processing Workflow",
     "description": null,
@@ -344,32 +342,10 @@
     },
     "nodeGroups": [],
     "pinData": {},
-    "versionId": "c11710c9-3aed-4e5b-b81b-ba8c5d2ff24a",
-    "activeVersionId": null,
     "versionCounter": 1,
     "triggerCount": 0,
     "sourceWorkflowId": null,
     "tags": [],
-    "shared": [
-      {
-        "updatedAt": "2026-07-13T14:59:12.154Z",
-        "createdAt": "2026-07-13T14:59:12.154Z",
-        "role": "workflow:owner",
-        "workflowId": "portfolio-local-ai-knowledge",
-        "projectId": "8HbPVW2w2YlXLHZJ",
-        "project": {
-          "updatedAt": "2026-07-12T13:40:37.583Z",
-          "createdAt": "2026-07-05T15:04:20.240Z",
-          "id": "8HbPVW2w2YlXLHZJ",
-          "name": "Konstantinos Foskolakis <kostasfoskolakis19@gmail.com>",
-          "type": "personal",
-          "icon": null,
-          "description": null,
-          "customTelemetryTags": [],
-          "creatorId": "598fe526-8537-4908-a35b-5cf6163385af"
-        }
-      }
-    ],
     "versionMetadata": {
       "name": null,
       "description": null

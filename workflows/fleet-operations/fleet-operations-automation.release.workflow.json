@@ -1,7 +1,5 @@
 [
   {
-    "updatedAt": "2026-07-13T14:57:59.015Z",
-    "createdAt": "2026-07-13T14:57:59.015Z",
     "id": "portfolio-fleet-operations",
     "name": "Fleet Operations Automation System",
     "description": null,
@@ -295,32 +293,10 @@
     },
     "nodeGroups": [],
     "pinData": {},
-    "versionId": "2ca2b23c-9347-46ef-9e22-2ccecdd011aa",
-    "activeVersionId": null,
     "versionCounter": 1,
     "triggerCount": 0,
     "sourceWorkflowId": null,
     "tags": [],
-    "shared": [
-      {
-        "updatedAt": "2026-07-13T14:57:59.015Z",
-        "createdAt": "2026-07-13T14:57:59.015Z",
-        "role": "workflow:owner",
-        "workflowId": "portfolio-fleet-operations",
-        "projectId": "8HbPVW2w2YlXLHZJ",
-        "project": {
-          "updatedAt": "2026-07-12T13:40:37.583Z",
-          "createdAt": "2026-07-05T15:04:20.240Z",
-          "id": "8HbPVW2w2YlXLHZJ",
-          "name": "Konstantinos Foskolakis <kostasfoskolakis19@gmail.com>",
-          "type": "personal",
-          "icon": null,
-          "description": null,
-          "customTelemetryTags": [],
-          "creatorId": "598fe526-8537-4908-a35b-5cf6163385af"
-        }
-      }
-    ],
     "versionMetadata": {
       "name": null,
       "description": null
