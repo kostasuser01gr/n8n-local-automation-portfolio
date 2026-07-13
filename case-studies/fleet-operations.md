@@ -40,15 +40,22 @@ No workflow-logic error occurred after the shared local PostgreSQL credential an
 
 ## Evidence
 
-- Evidence summary: `evidence/EXECUTION_EVIDENCE.md`
-- Machine-readable evidence: `evidence/execution-evidence.json`
-- Report output: `evidence/report-output.txt`
-- Screenshot manifest: `screenshots/SCREENSHOT_MANIFEST.md`
-- Release export: `workflow/release/fleet-operations-automation.release.workflow.json`
+- Execution summary: `../docs/EXECUTION_SUMMARY.md`
+- Workflow canvas screenshot: `../screenshots/fleet-operations/workflow-canvas.png`
+- Successful execution screenshot: `../screenshots/fleet-operations/successful-execution-green-nodes.png`
+- Final output evidence: `../screenshots/fleet-operations/final-output-evidence.txt`
+- Screenshot manifest: `../screenshots/fleet-operations/SCREENSHOT_MANIFEST.md`
+- Release export: `../workflows/fleet-operations/fleet-operations-automation.release.workflow.json`
+
+## Screenshots
+
+![Fleet Operations workflow canvas](../screenshots/fleet-operations/workflow-canvas.png)
+
+![Fleet Operations successful execution](../screenshots/fleet-operations/successful-execution-green-nodes.png)
 
 ## Limitations
 
-UI screenshots require an authenticated local n8n browser session. The verified data set is synthetic and intentionally small, designed to prove workflow behavior and persistence rather than model a full fleet feed.
+The verified data set is synthetic and intentionally small, designed to prove workflow behavior and persistence rather than model a full fleet feed.
 
 ## Future Roadmap
 

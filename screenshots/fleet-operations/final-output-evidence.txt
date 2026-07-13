@@ -1,0 +1,751 @@
+n8n Task Broker ready on 127.0.0.1, port 5681
+Failed to start Python task runner in internal mode. because Python 3 is missing from this system. Launching a Python runner in internal mode is intended only for debugging and is not recommended for production. Users are encouraged to deploy in external mode. See: https://docs.n8n.io/hosting/configuration/task-runners/#setting-up-external-mode
+[license SDK] Skipping renewal on init: renewOnInit is disabled in config
+[license SDK] Skipping renewal on init: autoRenewEnabled is disabled in config
+[license SDK] Skipping renewal on init: license cert is not initialized
+Registered runner "JS Task Runner" ([RUNNER_ID_REDACTED]) 
+{
+  "data": {
+    "version": 1,
+    "startData": {},
+    "resultData": {
+      "runData": {
+        "Manual Trigger": [
+          {
+            "startTime": 1783954687799,
+            "executionIndex": 0,
+            "source": [],
+            "hints": [],
+            "executionTime": 1,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {},
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Sample Fleet Intake": [
+          {
+            "startTime": 1783954687800,
+            "executionIndex": 1,
+            "source": [
+              {
+                "previousNode": "Manual Trigger",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 652,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "sourceBatch": "portfolio-fleet-demo-001",
+                      "records": [
+                        {
+                          "registration_plate": "N8N-1024",
+                          "company": "DemoRent",
+                          "vehicle_group": "Compact",
+                          "model": "Toyota Yaris Hybrid",
+                          "wash_type": "standard",
+                          "eco": true,
+                          "current_status": "available",
+                          "maintenance_flag": false,
+                          "damage_flag": false,
+                          "fuel_level": 88,
+                          "current_location": "Athens Station A",
+                          "assigned_employee": "station-demo-01",
+                          "notes": "Clean and ready"
+                        },
+                        {
+                          "registration_plate": "OPS-2048",
+                          "company": "DemoRent",
+                          "vehicle_group": "SUV",
+                          "model": "Kia Sportage",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "inspection",
+                          "maintenance_flag": true,
+                          "damage_flag": false,
+                          "fuel_level": 41,
+                          "current_location": "Athens Service Bay",
+                          "assigned_employee": "station-demo-02",
+                          "notes": "Maintenance light reported"
+                        },
+                        {
+                          "registration_plate": "QA-4096",
+                          "company": "PartnerFleet",
+                          "vehicle_group": "Van",
+                          "model": "Mercedes Vito",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "blocked",
+                          "maintenance_flag": false,
+                          "damage_flag": true,
+                          "fuel_level": 22,
+                          "current_location": "Athens Station B",
+                          "assigned_employee": "station-demo-03",
+                          "notes": "Damage photo required before release"
+                        }
+                      ]
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Validate Fleet Records": [
+          {
+            "startTime": 1783954688452,
+            "executionIndex": 2,
+            "source": [
+              {
+                "previousNode": "Sample Fleet Intake",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 5,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "sourceBatch": "portfolio-fleet-demo-001",
+                      "recordsSeen": 3,
+                      "validRecords": [
+                        {
+                          "registration_plate": "N8N-1024",
+                          "company": "DemoRent",
+                          "vehicle_group": "Compact",
+                          "model": "Toyota Yaris Hybrid",
+                          "wash_type": "standard",
+                          "eco": true,
+                          "current_status": "available",
+                          "maintenance_flag": false,
+                          "damage_flag": false,
+                          "fuel_level": 88,
+                          "current_location": "Athens Station A",
+                          "assigned_employee": "station-demo-01",
+                          "notes": "Clean and ready"
+                        },
+                        {
+                          "registration_plate": "OPS-2048",
+                          "company": "DemoRent",
+                          "vehicle_group": "SUV",
+                          "model": "Kia Sportage",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "inspection",
+                          "maintenance_flag": true,
+                          "damage_flag": false,
+                          "fuel_level": 41,
+                          "current_location": "Athens Service Bay",
+                          "assigned_employee": "station-demo-02",
+                          "notes": "Maintenance light reported"
+                        },
+                        {
+                          "registration_plate": "QA-4096",
+                          "company": "PartnerFleet",
+                          "vehicle_group": "Van",
+                          "model": "Mercedes Vito",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "blocked",
+                          "maintenance_flag": false,
+                          "damage_flag": true,
+                          "fuel_level": 22,
+                          "current_location": "Athens Station B",
+                          "assigned_employee": "station-demo-03",
+                          "notes": "Damage photo required before release"
+                        }
+                      ],
+                      "rejectedRecords": []
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Normalize and Detect Duplicates": [
+          {
+            "startTime": 1783954688457,
+            "executionIndex": 3,
+            "source": [
+              {
+                "previousNode": "Validate Fleet Records",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 4,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "sourceBatch": "portfolio-fleet-demo-001",
+                      "recordsSeen": 3,
+                      "validRecords": [
+                        {
+                          "registration_plate": "N8N-1024",
+                          "company": "DemoRent",
+                          "vehicle_group": "Compact",
+                          "model": "Toyota Yaris Hybrid",
+                          "wash_type": "standard",
+                          "eco": true,
+                          "current_status": "available",
+                          "maintenance_flag": false,
+                          "damage_flag": false,
+                          "fuel_level": 88,
+                          "current_location": "Athens Station A",
+                          "assigned_employee": "station-demo-01",
+                          "notes": "Clean and ready",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "N8N-1024",
+                            "company": "DemoRent",
+                            "vehicle_group": "Compact",
+                            "model": "Toyota Yaris Hybrid",
+                            "wash_type": "standard",
+                            "eco": true,
+                            "current_status": "available",
+                            "maintenance_flag": false,
+                            "damage_flag": false,
+                            "fuel_level": 88,
+                            "current_location": "Athens Station A",
+                            "assigned_employee": "station-demo-01",
+                            "notes": "Clean and ready"
+                          }
+                        },
+                        {
+                          "registration_plate": "OPS-2048",
+                          "company": "DemoRent",
+                          "vehicle_group": "SUV",
+                          "model": "Kia Sportage",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "inspection",
+                          "maintenance_flag": true,
+                          "damage_flag": false,
+                          "fuel_level": 41,
+                          "current_location": "Athens Service Bay",
+                          "assigned_employee": "station-demo-02",
+                          "notes": "Maintenance light reported",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "OPS-2048",
+                            "company": "DemoRent",
+                            "vehicle_group": "SUV",
+                            "model": "Kia Sportage",
+                            "wash_type": "deep",
+                            "eco": false,
+                            "current_status": "inspection",
+                            "maintenance_flag": true,
+                            "damage_flag": false,
+                            "fuel_level": 41,
+                            "current_location": "Athens Service Bay",
+                            "assigned_employee": "station-demo-02",
+                            "notes": "Maintenance light reported"
+                          }
+                        },
+                        {
+                          "registration_plate": "QA-4096",
+                          "company": "PartnerFleet",
+                          "vehicle_group": "Van",
+                          "model": "Mercedes Vito",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "blocked",
+                          "maintenance_flag": false,
+                          "damage_flag": true,
+                          "fuel_level": 22,
+                          "current_location": "Athens Station B",
+                          "assigned_employee": "station-demo-03",
+                          "notes": "Damage photo required before release",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "QA-4096",
+                            "company": "PartnerFleet",
+                            "vehicle_group": "Van",
+                            "model": "Mercedes Vito",
+                            "wash_type": "deep",
+                            "eco": false,
+                            "current_status": "blocked",
+                            "maintenance_flag": false,
+                            "damage_flag": true,
+                            "fuel_level": 22,
+                            "current_location": "Athens Station B",
+                            "assigned_employee": "station-demo-03",
+                            "notes": "Damage photo required before release"
+                          }
+                        }
+                      ],
+                      "rejectedRecords": [],
+                      "duplicateCandidates": 0
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Classify Operational Priority": [
+          {
+            "startTime": 1783954688461,
+            "executionIndex": 4,
+            "source": [
+              {
+                "previousNode": "Normalize and Detect Duplicates",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 3,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "sourceBatch": "portfolio-fleet-demo-001",
+                      "recordsSeen": 3,
+                      "validRecords": [
+                        {
+                          "registration_plate": "N8N-1024",
+                          "company": "DemoRent",
+                          "vehicle_group": "Compact",
+                          "model": "Toyota Yaris Hybrid",
+                          "wash_type": "standard",
+                          "eco": true,
+                          "current_status": "available",
+                          "maintenance_flag": false,
+                          "damage_flag": false,
+                          "fuel_level": 88,
+                          "current_location": "Athens Station A",
+                          "assigned_employee": "station-demo-01",
+                          "notes": "Clean and ready",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "N8N-1024",
+                            "company": "DemoRent",
+                            "vehicle_group": "Compact",
+                            "model": "Toyota Yaris Hybrid",
+                            "wash_type": "standard",
+                            "eco": true,
+                            "current_status": "available",
+                            "maintenance_flag": false,
+                            "damage_flag": false,
+                            "fuel_level": 88,
+                            "current_location": "Athens Station A",
+                            "assigned_employee": "station-demo-01",
+                            "notes": "Clean and ready"
+                          },
+                          "operational_priority": "NORMAL"
+                        },
+                        {
+                          "registration_plate": "OPS-2048",
+                          "company": "DemoRent",
+                          "vehicle_group": "SUV",
+                          "model": "Kia Sportage",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "inspection",
+                          "maintenance_flag": true,
+                          "damage_flag": false,
+                          "fuel_level": 41,
+                          "current_location": "Athens Service Bay",
+                          "assigned_employee": "station-demo-02",
+                          "notes": "Maintenance light reported",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "OPS-2048",
+                            "company": "DemoRent",
+                            "vehicle_group": "SUV",
+                            "model": "Kia Sportage",
+                            "wash_type": "deep",
+                            "eco": false,
+                            "current_status": "inspection",
+                            "maintenance_flag": true,
+                            "damage_flag": false,
+                            "fuel_level": 41,
+                            "current_location": "Athens Service Bay",
+                            "assigned_employee": "station-demo-02",
+                            "notes": "Maintenance light reported"
+                          },
+                          "operational_priority": "HIGH"
+                        },
+                        {
+                          "registration_plate": "QA-4096",
+                          "company": "PartnerFleet",
+                          "vehicle_group": "Van",
+                          "model": "Mercedes Vito",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "blocked",
+                          "maintenance_flag": false,
+                          "damage_flag": true,
+                          "fuel_level": 22,
+                          "current_location": "Athens Station B",
+                          "assigned_employee": "station-demo-03",
+                          "notes": "Damage photo required before release",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "QA-4096",
+                            "company": "PartnerFleet",
+                            "vehicle_group": "Van",
+                            "model": "Mercedes Vito",
+                            "wash_type": "deep",
+                            "eco": false,
+                            "current_status": "blocked",
+                            "maintenance_flag": false,
+                            "damage_flag": true,
+                            "fuel_level": 22,
+                            "current_location": "Athens Station B",
+                            "assigned_employee": "station-demo-03",
+                            "notes": "Damage photo required before release"
+                          },
+                          "operational_priority": "HIGH"
+                        }
+                      ],
+                      "rejectedRecords": [],
+                      "duplicateCandidates": 0,
+                      "recordsValid": 3,
+                      "recordsRejected": 0,
+                      "highPriorityCount": 2
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Split Fleet Valid and Rejected": [
+          {
+            "startTime": 1783954688464,
+            "executionIndex": 5,
+            "source": [
+              {
+                "previousNode": "Classify Operational Priority",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 2,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "sourceBatch": "portfolio-fleet-demo-001",
+                      "recordsSeen": 3,
+                      "recordsValid": 3,
+                      "recordsRejected": 0,
+                      "duplicateCandidates": 0,
+                      "highPriorityCount": 2,
+                      "validRecords": [
+                        {
+                          "registration_plate": "N8N-1024",
+                          "company": "DemoRent",
+                          "vehicle_group": "Compact",
+                          "model": "Toyota Yaris Hybrid",
+                          "wash_type": "standard",
+                          "eco": true,
+                          "current_status": "available",
+                          "maintenance_flag": false,
+                          "damage_flag": false,
+                          "fuel_level": 88,
+                          "current_location": "Athens Station A",
+                          "assigned_employee": "station-demo-01",
+                          "notes": "Clean and ready",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "N8N-1024",
+                            "company": "DemoRent",
+                            "vehicle_group": "Compact",
+                            "model": "Toyota Yaris Hybrid",
+                            "wash_type": "standard",
+                            "eco": true,
+                            "current_status": "available",
+                            "maintenance_flag": false,
+                            "damage_flag": false,
+                            "fuel_level": 88,
+                            "current_location": "Athens Station A",
+                            "assigned_employee": "station-demo-01",
+                            "notes": "Clean and ready"
+                          },
+                          "operational_priority": "NORMAL"
+                        },
+                        {
+                          "registration_plate": "OPS-2048",
+                          "company": "DemoRent",
+                          "vehicle_group": "SUV",
+                          "model": "Kia Sportage",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "inspection",
+                          "maintenance_flag": true,
+                          "damage_flag": false,
+                          "fuel_level": 41,
+                          "current_location": "Athens Service Bay",
+                          "assigned_employee": "station-demo-02",
+                          "notes": "Maintenance light reported",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "OPS-2048",
+                            "company": "DemoRent",
+                            "vehicle_group": "SUV",
+                            "model": "Kia Sportage",
+                            "wash_type": "deep",
+                            "eco": false,
+                            "current_status": "inspection",
+                            "maintenance_flag": true,
+                            "damage_flag": false,
+                            "fuel_level": 41,
+                            "current_location": "Athens Service Bay",
+                            "assigned_employee": "station-demo-02",
+                            "notes": "Maintenance light reported"
+                          },
+                          "operational_priority": "HIGH"
+                        },
+                        {
+                          "registration_plate": "QA-4096",
+                          "company": "PartnerFleet",
+                          "vehicle_group": "Van",
+                          "model": "Mercedes Vito",
+                          "wash_type": "deep",
+                          "eco": false,
+                          "current_status": "blocked",
+                          "maintenance_flag": false,
+                          "damage_flag": true,
+                          "fuel_level": 22,
+                          "current_location": "Athens Station B",
+                          "assigned_employee": "station-demo-03",
+                          "notes": "Damage photo required before release",
+                          "source_batch": "portfolio-fleet-demo-001",
+                          "raw_record": {
+                            "registration_plate": "QA-4096",
+                            "company": "PartnerFleet",
+                            "vehicle_group": "Van",
+                            "model": "Mercedes Vito",
+                            "wash_type": "deep",
+                            "eco": false,
+                            "current_status": "blocked",
+                            "maintenance_flag": false,
+                            "damage_flag": true,
+                            "fuel_level": 22,
+                            "current_location": "Athens Station B",
+                            "assigned_employee": "station-demo-03",
+                            "notes": "Damage photo required before release"
+                          },
+                          "operational_priority": "HIGH"
+                        }
+                      ],
+                      "rejectedRecords": []
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Persist Fleet Vehicles": [
+          {
+            "startTime": 1783954688466,
+            "executionIndex": 6,
+            "source": [
+              {
+                "previousNode": "Split Fleet Valid and Rejected",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 26,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "upserted_rows": 3,
+                      "inserted_rows": 3,
+                      "updated_rows": 0
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Persist Fleet Audit": [
+          {
+            "startTime": 1783954688492,
+            "executionIndex": 7,
+            "source": [
+              {
+                "previousNode": "Persist Fleet Vehicles",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 12,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "id": "1",
+                      "source_batch": "portfolio-fleet-demo-001",
+                      "status": "completed",
+                      "created_at": "2026-07-13T14:58:08.503Z"
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Daily Operations Summary": [
+          {
+            "startTime": 1783954688504,
+            "executionIndex": 8,
+            "source": [
+              {
+                "previousNode": "Persist Fleet Audit",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 3,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "status": "completed",
+                      "sourceBatch": "portfolio-fleet-demo-001",
+                      "recordsSeen": 3,
+                      "recordsValid": 3,
+                      "recordsRejected": 0,
+                      "duplicateCandidates": 0,
+                      "highPriorityCount": 2,
+                      "persistence": {
+                        "upserted_rows": 3,
+                        "inserted_rows": 3,
+                        "updated_rows": 0
+                      }
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        "Rejected Records Summary": [
+          {
+            "startTime": 1783954688507,
+            "executionIndex": 9,
+            "source": [
+              {
+                "previousNode": "Split Fleet Valid and Rejected",
+                "previousNodeOutput": 0,
+                "previousNodeRun": 0
+              }
+            ],
+            "hints": [],
+            "executionTime": 1,
+            "executionStatus": "success",
+            "data": {
+              "main": [
+                [
+                  {
+                    "json": {
+                      "status": "review_required",
+                      "rejectedRecords": []
+                    },
+                    "pairedItem": {
+                      "item": 0
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "lastNodeExecuted": "Rejected Records Summary"
+    },
+    "executionData": {
+      "contextData": {},
+      "nodeExecutionStack": [],
+      "metadata": {},
+      "waitingExecution": {},
+      "waitingExecutionSource": {},
+      "runtimeData": {
+        "version": 1,
+        "establishedAt": 1783954687799,
+        "source": "cli",
+        "triggerNode": {
+          "name": "Manual Trigger",
+          "type": "n8n-nodes-base.manualTrigger"
+        }
+      }
+    },
+    "resumeToken": "[REDACTED_RESUME_TOKEN]"
+  },
+  "mode": "cli",
+  "startedAt": "2026-07-13T14:58:07.798Z",
+  "stoppedAt": "2026-07-13T14:58:08.508Z",
+  "storedAt": "db",
+  "status": "success",
+  "finished": true
+}

@@ -41,15 +41,22 @@ The workflow executed successfully after the shared PostgreSQL credential and CL
 
 ## Evidence
 
-- Evidence summary: `evidence/EXECUTION_EVIDENCE.md`
-- Machine-readable evidence: `evidence/execution-evidence.json`
-- Report output: `evidence/report-output.txt`
-- Screenshot manifest: `screenshots/SCREENSHOT_MANIFEST.md`
-- Release export: `workflow/release/local-ai-knowledge-processing.release.workflow.json`
+- Execution summary: `../docs/EXECUTION_SUMMARY.md`
+- Workflow canvas screenshot: `../screenshots/local-ai-knowledge/workflow-canvas.png`
+- Successful execution screenshot: `../screenshots/local-ai-knowledge/successful-execution-green-nodes.png`
+- Final output evidence: `../screenshots/local-ai-knowledge/final-output-evidence.txt`
+- Screenshot manifest: `../screenshots/local-ai-knowledge/SCREENSHOT_MANIFEST.md`
+- Release export: `../workflows/local-ai-knowledge/local-ai-knowledge-processing.release.workflow.json`
+
+## Screenshots
+
+![Local AI Knowledge workflow canvas](../screenshots/local-ai-knowledge/workflow-canvas.png)
+
+![Local AI Knowledge successful execution](../screenshots/local-ai-knowledge/successful-execution-green-nodes.png)
 
 ## Limitations
 
-UI screenshots require an authenticated local n8n browser session. The verified run uses deterministic logic only; local model generation can be enabled later after selecting and testing a specific installed Ollama model.
+The verified run uses deterministic logic only; local model generation can be enabled later after selecting and testing a specific installed Ollama model.
 
 ## Future Roadmap
 

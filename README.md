@@ -16,9 +16,17 @@ This package contains three sanitized n8n workflow examples that were executed l
 - `schemas/`: PostgreSQL schemas required by the workflows
 - `sample-data/`: shareable sample inputs
 - `case-studies/`: evidence-based project writeups
-- `screenshots/`: screenshot manifests and auth-boundary proof
+- `screenshots/`: verified authenticated n8n UI screenshots and final-output evidence
 - `docs/`: import, validation, and execution notes
 - `scripts/`: local validation and secret scan helpers
+
+## Verified Screenshots
+
+| Project | Workflow canvas | Successful execution |
+|---|---|---|
+| Job Application Intelligence Pipeline | [Canvas](screenshots/job-tracker/workflow-canvas.png) | [Execution](screenshots/job-tracker/successful-execution-green-nodes.png) |
+| Fleet Operations Automation System | [Canvas](screenshots/fleet-operations/workflow-canvas.png) | [Execution](screenshots/fleet-operations/successful-execution-green-nodes.png) |
+| Local AI Knowledge Workflow | [Canvas](screenshots/local-ai-knowledge/workflow-canvas.png) | [Execution](screenshots/local-ai-knowledge/successful-execution-green-nodes.png) |
 
 ## Quick Validation
 

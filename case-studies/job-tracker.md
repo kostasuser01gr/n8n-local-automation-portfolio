@@ -41,15 +41,22 @@ The first CLI execution hit n8n task broker port `5679`, already used by the run
 
 ## Evidence
 
-- Evidence summary: `evidence/EXECUTION_EVIDENCE.md`
-- Machine-readable evidence: `evidence/execution-evidence.json`
-- Report output: `evidence/report-output.txt`
-- Screenshot manifest: `screenshots/SCREENSHOT_MANIFEST.md`
-- Release export: `workflow/release/job-application-intelligence.release.workflow.json`
+- Execution summary: `../docs/EXECUTION_SUMMARY.md`
+- Workflow canvas screenshot: `../screenshots/job-tracker/workflow-canvas.png`
+- Successful execution screenshot: `../screenshots/job-tracker/successful-execution-green-nodes.png`
+- Final output evidence: `../screenshots/job-tracker/final-output-evidence.txt`
+- Screenshot manifest: `../screenshots/job-tracker/SCREENSHOT_MANIFEST.md`
+- Release export: `../workflows/job-tracker/job-application-intelligence.release.workflow.json`
+
+## Screenshots
+
+![Job Application workflow canvas](../screenshots/job-tracker/workflow-canvas.png)
+
+![Job Application successful execution](../screenshots/job-tracker/successful-execution-green-nodes.png)
 
 ## Limitations
 
-UI screenshots require an authenticated local n8n browser session. The sanitized release workflow uses `/files/job-tracker/jobs-import-example.json`; users should either place sample data there or adjust the config node to their own mounted path.
+The sanitized release workflow uses `/files/job-tracker/jobs-import-example.json`; users should either place sample data there or adjust the config node to their own mounted path.
 
 ## Future Roadmap
 
