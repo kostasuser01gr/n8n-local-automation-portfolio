@@ -124,7 +124,7 @@ export const evidenceItems = [
   "[EXECUTED] Three local workflow runs",
   "[VERIFIED] PostgreSQL row-count evidence",
   "[SANITIZED] Release workflow exports",
-  "[PACKAGED] GitHub Release v0.1.0",
+  "[PACKAGED] GitHub Release v0.2.0",
   "[VERIFIED] Backup and secret-scan reports"
 ];
 
