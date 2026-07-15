@@ -1,0 +1,305 @@
+[
+  {
+    "id": "portfolio-fleet-operations",
+    "name": "Fleet Operations Automation System",
+    "description": null,
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "content": "Intake, validation, normalization, duplicate detection, and priority classification.",
+          "height": 220,
+          "width": 420,
+          "color": 4
+        },
+        "id": "fleet-note-intake",
+        "name": "Intake and Validation Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -460,
+          -140
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "fleet-manual-trigger",
+        "name": "Manual Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -420,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { sourceBatch: 'portfolio-fleet-demo-001', records: [\n  { registration_plate: 'N8N-1024', company: 'DemoRent', vehicle_group: 'Compact', model: 'Toyota Yaris Hybrid', wash_type: 'standard', eco: true, current_status: 'available', maintenance_flag: false, damage_flag: false, fuel_level: 88, current_location: 'Athens Station A', assigned_employee: 'station-demo-01', notes: 'Clean and ready' },\n  { registration_plate: 'OPS-2048', company: 'DemoRent', vehicle_group: 'SUV', model: 'Kia Sportage', wash_type: 'deep', eco: false, current_status: 'inspection', maintenance_flag: true, damage_flag: false, fuel_level: 41, current_location: 'Athens Service Bay', assigned_employee: 'station-demo-02', notes: 'Maintenance light reported' },\n  { registration_plate: 'QA-4096', company: 'PartnerFleet', vehicle_group: 'Van', model: 'Mercedes Vito', wash_type: 'deep', eco: false, current_status: 'blocked', maintenance_flag: false, damage_flag: true, fuel_level: 22, current_location: 'Athens Station B', assigned_employee: 'station-demo-03', notes: 'Damage photo required before release' }\n] } }];"
+        },
+        "id": "fleet-sample-data",
+        "name": "Sample Fleet Intake",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -180,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const sourceBatch = $json.sourceBatch || 'manual-fleet-batch';\nconst records = Array.isArray($json.records) ? $json.records : [];\nconst validRecords = [];\nconst rejectedRecords = [];\nfor (const record of records) {\n  const missing = ['registration_plate', 'company', 'model', 'current_status'].filter((field) => !record[field]);\n  if (missing.length) {\n    rejectedRecords.push({ rejection_reason: `missing_required_fields:${missing.join(',')}`, raw_record: record });\n  } else {\n    validRecords.push(record);\n  }\n}\nreturn [{ json: { sourceBatch, recordsSeen: records.length, validRecords, rejectedRecords } }];"
+        },
+        "id": "fleet-validate",
+        "name": "Validate Fleet Records",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          80,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const seen = new Set();\nlet duplicateCandidates = 0;\nconst normalizedRecords = ($json.validRecords || []).map((record) => {\n  const registration_plate = String(record.registration_plate).toUpperCase().replace(/[^A-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');\n  if (seen.has(registration_plate)) duplicateCandidates += 1;\n  seen.add(registration_plate);\n  return { ...record, registration_plate, company: String(record.company).trim(), model: String(record.model).trim(), source_batch: $json.sourceBatch, raw_record: record };\n});\nreturn [{ json: { ...$json, validRecords: normalizedRecords, duplicateCandidates } }];"
+        },
+        "id": "fleet-normalize",
+        "name": "Normalize and Detect Duplicates",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          360,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const priorityRank = { NORMAL: 1, MEDIUM: 2, HIGH: 3 };\nlet highPriorityCount = 0;\nconst enriched = ($json.validRecords || []).map((record) => {\n  let operational_priority = 'NORMAL';\n  const status = String(record.current_status || '').toLowerCase();\n  if (record.damage_flag || record.maintenance_flag || status === 'blocked' || Number(record.fuel_level || 0) < 25) operational_priority = 'HIGH';\n  else if (String(record.wash_type || '').toLowerCase() === 'deep' || Number(record.fuel_level || 0) < 50 || status === 'inspection') operational_priority = 'MEDIUM';\n  if (priorityRank[operational_priority] === priorityRank.HIGH) highPriorityCount += 1;\n  return { ...record, operational_priority };\n});\nreturn [{ json: { ...$json, validRecords: enriched, recordsValid: enriched.length, recordsRejected: ($json.rejectedRecords || []).length, highPriorityCount } }];"
+        },
+        "id": "fleet-priority",
+        "name": "Classify Operational Priority",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          660,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const summary = {\n  sourceBatch: $json.sourceBatch,\n  recordsSeen: $json.recordsSeen,\n  recordsValid: $json.recordsValid,\n  recordsRejected: $json.recordsRejected,\n  duplicateCandidates: $json.duplicateCandidates,\n  highPriorityCount: $json.highPriorityCount,\n  validRecords: $json.validRecords,\n  rejectedRecords: $json.rejectedRecords\n};\nreturn [{ json: summary }];"
+        },
+        "id": "fleet-split",
+        "name": "Split Fleet Valid and Rejected",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          960,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "content": "PostgreSQL nodes use the credential named Local n8n Postgres. Rejections stay in the audit summary for transparent partial-failure handling.",
+          "height": 220,
+          "width": 500,
+          "color": 5
+        },
+        "id": "fleet-note-persist",
+        "name": "Persistence and Summary Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          1160,
+          -140
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "WITH src AS (\n  SELECT * FROM jsonb_to_recordset($1::jsonb) AS x(\n    registration_plate text,\n    company text,\n    vehicle_group text,\n    model text,\n    wash_type text,\n    eco boolean,\n    current_status text,\n    operational_priority text,\n    maintenance_flag boolean,\n    damage_flag boolean,\n    fuel_level integer,\n    current_location text,\n    assigned_employee text,\n    notes text,\n    source_batch text,\n    raw_record jsonb\n  )\n), upserted AS (\n  INSERT INTO public.fleet_vehicles (\n    registration_plate, company, vehicle_group, model, wash_type, eco, current_status,\n    operational_priority, maintenance_flag, damage_flag, fuel_level, current_location,\n    assigned_employee, notes, source_batch, raw_record\n  )\n  SELECT registration_plate, company, vehicle_group, model, wash_type, eco, current_status,\n    operational_priority, maintenance_flag, damage_flag, fuel_level, current_location,\n    assigned_employee, notes, source_batch, raw_record\n  FROM src\n  ON CONFLICT (lower(registration_plate)) DO UPDATE SET\n    company = EXCLUDED.company,\n    vehicle_group = EXCLUDED.vehicle_group,\n    model = EXCLUDED.model,\n    wash_type = EXCLUDED.wash_type,\n    eco = EXCLUDED.eco,\n    current_status = EXCLUDED.current_status,\n    operational_priority = EXCLUDED.operational_priority,\n    maintenance_flag = EXCLUDED.maintenance_flag,\n    damage_flag = EXCLUDED.damage_flag,\n    fuel_level = EXCLUDED.fuel_level,\n    current_location = EXCLUDED.current_location,\n    assigned_employee = EXCLUDED.assigned_employee,\n    notes = EXCLUDED.notes,\n    source_batch = EXCLUDED.source_batch,\n    raw_record = EXCLUDED.raw_record,\n    updated_at = now()\n  RETURNING (xmax = 0) AS inserted\n)\nSELECT count(*)::integer AS upserted_rows,\n       count(*) FILTER (WHERE inserted)::integer AS inserted_rows,\n       count(*) FILTER (WHERE NOT inserted)::integer AS updated_rows\nFROM upserted;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[JSON.stringify($json.validRecords || [])]}}"
+          }
+        },
+        "id": "fleet-persist-vehicles",
+        "name": "Persist Fleet Vehicles",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1240,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "INSERT INTO public.fleet_operation_runs (\n  source_batch, records_seen, records_valid, records_rejected,\n  duplicate_candidates, high_priority_count, status, summary\n) VALUES ($1, $2, $3, $4, $5, $6, 'completed', $7::jsonb)\nRETURNING id, source_batch, status, created_at;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[$('Split Fleet Valid and Rejected').first().json.sourceBatch,$('Split Fleet Valid and Rejected').first().json.recordsSeen,$('Split Fleet Valid and Rejected').first().json.recordsValid,$('Split Fleet Valid and Rejected').first().json.recordsRejected,$('Split Fleet Valid and Rejected').first().json.duplicateCandidates,$('Split Fleet Valid and Rejected').first().json.highPriorityCount,JSON.stringify($('Split Fleet Valid and Rejected').first().json)]}}"
+          }
+        },
+        "id": "fleet-persist-audit",
+        "name": "Persist Fleet Audit",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1520,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const summary = $('Split Fleet Valid and Rejected').first().json;\nconst persistence = $('Persist Fleet Vehicles').first().json;\nreturn [{ json: { status: 'completed', sourceBatch: summary.sourceBatch, recordsSeen: summary.recordsSeen, recordsValid: summary.recordsValid, recordsRejected: summary.recordsRejected, duplicateCandidates: summary.duplicateCandidates, highPriorityCount: summary.highPriorityCount, persistence } }];"
+        },
+        "id": "fleet-summary",
+        "name": "Daily Operations Summary",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1800,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { status: 'review_required', rejectedRecords: $json.rejectedRecords || [] } }];"
+        },
+        "id": "fleet-rejections",
+        "name": "Rejected Records Summary",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1240,
+          380
+        ]
+      }
+    ],
+    "connections": {
+      "Manual Trigger": {
+        "main": [
+          [
+            {
+              "node": "Sample Fleet Intake",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sample Fleet Intake": {
+        "main": [
+          [
+            {
+              "node": "Validate Fleet Records",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Fleet Records": {
+        "main": [
+          [
+            {
+              "node": "Normalize and Detect Duplicates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize and Detect Duplicates": {
+        "main": [
+          [
+            {
+              "node": "Classify Operational Priority",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Classify Operational Priority": {
+        "main": [
+          [
+            {
+              "node": "Split Fleet Valid and Rejected",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Fleet Valid and Rejected": {
+        "main": [
+          [
+            {
+              "node": "Persist Fleet Vehicles",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Rejected Records Summary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Persist Fleet Vehicles": {
+        "main": [
+          [
+            {
+              "node": "Persist Fleet Audit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Persist Fleet Audit": {
+        "main": [
+          [
+            {
+              "node": "Daily Operations Summary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": false
+    },
+    "nodeGroups": [],
+    "pinData": {},
+    "versionCounter": 1,
+    "triggerCount": 0,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "versionMetadata": {
+      "name": null,
+      "description": null
+    }
+  }
+]

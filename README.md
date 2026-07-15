@@ -2,7 +2,15 @@
 
 Three verified n8n workflow examples for local automation builders, self-hosters, and reviewers who want to inspect real workflow execution evidence instead of only static exports.
 
+## View Live Portfolio
+
+Live presentation: https://n8n-local-automation-portfolio.vercel.app
+
+GitHub Release: https://github.com/kostasuser01gr/n8n-local-automation-portfolio/releases/tag/v0.2.0
+
 This repository contains sanitized n8n workflows, PostgreSQL schemas, sample data, screenshots, case studies, validation scripts, and application materials. The workflows were executed in a local self-hosted n8n environment and verified through PostgreSQL persistence checks.
+
+![Live portfolio home screenshot](screenshots/site/home-desktop.png)
 
 ## Verified Projects
 
@@ -40,6 +48,7 @@ flowchart LR
 - `release/`: first-release notes and publication planning
 - `evidence/`: reviewer index for evidence artifacts
 - `assets/social-preview.png`: sanitized GitHub social-preview candidate
+- `site/`: Next.js Vercel portfolio presentation
 
 ## Screenshots
 
@@ -114,6 +123,21 @@ Run from the repository root:
 ```
 
 The validation script checks workflow JSON, sample JSON, required docs, and release workflow credential markers. The secret scan checks for common secret, credential, and private-path patterns.
+
+## Website
+
+The live Vercel site presents the same verified evidence as a reviewer-oriented portfolio:
+
+- Home and project overview
+- Project detail pages
+- Architecture visualization
+- Execution evidence
+- Reliability and security
+- Debugging story
+- Application review guide
+- Safe application ZIP download
+
+Live URL: https://n8n-local-automation-portfolio.vercel.app
 
 ## Limitations
 

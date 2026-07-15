@@ -1,0 +1,453 @@
+[
+  {
+    "id": "jobAppIntelligence01",
+    "name": "Job Application Intelligence Pipeline",
+    "description": null,
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "v2-1",
+        "name": "Manual Trigger",
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          100,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { importSource: 'portfolio-job-application-intelligence', importFilePath: '/files/job-tracker/jobs-import-example.json' } }];"
+        },
+        "id": "v2-2",
+        "name": "Set Import Config",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          300,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "read",
+          "fileSelector": "={{$json.importFilePath}}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "id": "v2-3",
+        "name": "Read File From CORSAIR Inbox",
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          500,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "binaryPropertyName": "data",
+          "destinationKey": "fileText",
+          "options": {
+            "encoding": "utf8",
+            "keepSource": "json"
+          }
+        },
+        "id": "v2-4",
+        "name": "Extract Text From File",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1.1,
+        "position": [
+          700,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const importFilePath = '/files/job-tracker/jobs-import-example.json';\nconst importFileName = $json.fileName || 'jobs-import-example.json';\nconst importFormat = String($json.fileExtension || importFileName.split('.').pop() || 'json').toLowerCase();\nconst text = String($json.fileText || '');\n\nfunction parseCsvRows(input) {\n  const rows = [];\n  let row = [];\n  let field = '';\n  let quoted = false;\n  for (let i = 0; i < input.length; i++) {\n    const char = input[i];\n    if (quoted) {\n      if (char === '\"' && input[i + 1] === '\"') { field += '\"'; i++; }\n      else if (char === '\"') quoted = false;\n      else field += char;\n    } else if (char === '\"') quoted = true;\n    else if (char === ',') { row.push(field); field = ''; }\n    else if (char === '\\n') { row.push(field); rows.push(row); row = []; field = ''; }\n    else if (char !== '\\r') field += char;\n  }\n  if (field.length || row.length) { row.push(field); rows.push(row); }\n  return rows.filter(values => values.some(value => String(value).trim() !== ''));\n}\n\nfunction csvToObjects(input) {\n  const rows = parseCsvRows(input);\n  if (rows.length < 2) return [];\n  const headers = rows[0].map(header => String(header).trim());\n  return rows.slice(1).map(row => Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ''])));\n}\n\nlet records;\nif (importFormat === 'csv') records = csvToObjects(text);\nelse if (importFormat === 'json') {\n  const parsed = JSON.parse(text || '[]');\n  records = Array.isArray(parsed) ? parsed : Array.isArray(parsed.jobs) ? parsed.jobs : [parsed];\n} else {\n  throw new Error(`Unsupported import format: ${importFormat}`);\n}\n\nreturn [{ json: { importSource: 'local-file-import-v2', importFilePath, importFileName, importFormat, rawRecords: records, recordsSeen: records.length } }];"
+        },
+        "id": "v2-5",
+        "name": "Parse JSON or CSV",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          900,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const requiredFields = ['jobTitle', 'company', 'description'];\nconst listFields = ['requiredSkills', 'preferredSkills', 'languageRequirements'];\n\nfunction normalizeList(value) {\n  if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean);\n  if (value === undefined || value === null || value === '') return [];\n  const text = String(value).trim();\n  if (!text) return [];\n  if (text.startsWith('[')) {\n    try {\n      const parsed = JSON.parse(text);\n      if (Array.isArray(parsed)) return parsed.map(item => String(item).trim()).filter(Boolean);\n    } catch (error) {}\n  }\n  return text.split(/[|;]/).map(item => item.trim()).filter(Boolean);\n}\n\nconst validRecords = [];\nconst rejectedRecords = [];\nfor (const [index, raw] of ($json.rawRecords || []).entries()) {\n  const record = { ...raw, importRowNumber: index + 1 };\n  for (const field of listFields) record[field] = normalizeList(record[field]);\n  const errors = [];\n  for (const field of requiredFields) {\n    if (!String(record[field] || '').trim()) errors.push(`Missing ${field}`);\n  }\n  if (record.jobUrl && !/^https?:\\/\\//i.test(String(record.jobUrl))) errors.push('jobUrl must start with http:// or https:// when provided');\n  if (errors.length) rejectedRecords.push({ rejection_reason: errors.join('; '), raw_record: record });\n  else validRecords.push(record);\n}\n\nreturn [{ json: { ...$json, validRecords, rejectedRecords, recordsValid: validRecords.length, recordsRejected: rejectedRecords.length } }];"
+        },
+        "id": "v2-6",
+        "name": "Validate Records",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const validRecords = ($json.validRecords || []).map(job => {\n  const normalized = { ...job };\n  normalized.location = normalized.location || 'Unknown';\n  normalized.workModel = normalized.workModel || 'Unknown';\n  normalized.salaryRange = normalized.salaryRange || '';\n  normalized.source = normalized.source || `Local ${String($json.importFormat || '').toUpperCase()} Import`;\n  normalized.applicationStatus = normalized.applicationStatus || 'Imported';\n  normalized.normalizedLocation = String(normalized.workModel).toLowerCase().includes('remote') ? 'Remote' : normalized.location;\n  return normalized;\n});\nreturn [{ json: { ...$json, validRecords } }];"
+        },
+        "id": "v2-7",
+        "name": "Normalize Records",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1300,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const validRecords = ($json.validRecords || []).map(job => {\n  let score = 50;\n  const reasons = [];\n  const risks = [];\n  const workModel = String(job.workModel || '').toLowerCase();\n  const description = String(job.description || '').toLowerCase();\n  const salaryRange = String(job.salaryRange || '').toLowerCase();\n  if (workModel.includes('remote')) { score += 20; reasons.push('+Remote work'); }\n  else if (workModel.includes('hybrid')) { score += 5; reasons.push('+Hybrid work'); }\n  else if (workModel.includes('on-site') || workModel.includes('onsite')) { score -= 20; risks.push('-On-site required'); }\n  const reqStr = `${(job.requiredSkills || []).join(' ')} ${description}`.toLowerCase();\n  if (reqStr.includes('n8n') || reqStr.includes('automation')) { score += 15; reasons.push('+Automation match'); }\n  if (reqStr.includes('python') || reqStr.includes('node') || reqStr.includes('react')) { score += 10; reasons.push('+Tech stack match'); }\n  if ((job.languageRequirements || []).some(lang => String(lang).toLowerCase().includes('greek'))) { score += 15; reasons.push('+Native Greek advantage'); }\n  if (salaryRange.includes('€800') || salaryRange.includes('€850') || salaryRange.includes('€900') || salaryRange.includes('950')) { score -= 15; risks.push('-Low compensation'); }\n  else if (!salaryRange || salaryRange.includes('competitive') || salaryRange.includes('vague')) { score -= 5; risks.push('-Vague compensation'); }\n  else { score += 10; reasons.push('+Clear compensation'); }\n  if (description.includes('unpaid trial')) { score -= 30; risks.push('CRITICAL RISK: Unpaid trial'); }\n  if ((job.languageRequirements || []).some(lang => String(lang).toLowerCase().includes('german'))) { score -= 20; risks.push('-Requires German'); }\n  return { ...job, matchScore: Math.max(0, Math.min(100, score)), reasons, risks };\n});\nreturn [{ json: { ...$json, validRecords } }];"
+        },
+        "id": "v2-8",
+        "name": "Score Fit",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1500,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const validRecords = ($json.validRecords || []).map(job => {\n  let priority;\n  if (job.matchScore >= 85) priority = 'HIGH';\n  else if (job.matchScore >= 70) priority = 'MEDIUM';\n  else if (job.matchScore >= 50) priority = 'LOW';\n  else priority = 'SKIP';\n  return { ...job, priority };\n});\nreturn [{ json: { ...$json, validRecords } }];"
+        },
+        "id": "v2-9",
+        "name": "Classify Priority",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1700,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const validRecords = ($json.validRecords || []).map(job => {\n  const risks = job.risks || [];\n  let recommendedAction;\n  let nextStep;\n  if (job.priority === 'SKIP') { recommendedAction = 'Skip entirely'; nextStep = 'Archive without applying'; }\n  else if (risks.some(r => String(r).includes('CRITICAL RISK'))) { recommendedAction = 'Skip - Critical Red Flag'; nextStep = 'Do not spend more time unless terms change'; }\n  else if (risks.some(r => String(r).includes('Vague'))) { recommendedAction = 'Ask compensation and contract terms first'; nextStep = 'Send a short clarification message before tailoring materials'; }\n  else if (job.priority === 'HIGH' && String(job.workModel).toLowerCase().includes('remote')) { recommendedAction = 'Apply now with tailored CV'; nextStep = 'Tailor CV and submit today'; }\n  else if (job.priority === 'HIGH' || job.priority === 'MEDIUM') { recommendedAction = 'Build mini proof-of-work before applying'; nextStep = 'Create a small automation demo aligned to the role'; }\n  else { recommendedAction = 'Save for later'; nextStep = 'Review only after higher-priority roles are handled'; }\n  const tailoredAngle = job.priority === 'HIGH' ? 'Lead with local-first n8n, Docker, PostgreSQL, and automation evidence.' : 'Mention relevant automation experience only if the role clears compensation and logistics checks.';\n  return { ...job, recommendedAction, nextStep, tailoredAngle };\n});\nreturn [{ json: { ...$json, validRecords } }];"
+        },
+        "id": "v2-10",
+        "name": "Generate Action Recommendation",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1900,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const seen = new Map();\nlet duplicateCandidates = 0;\nconst validRecords = ($json.validRecords || []).map(job => {\n  const key = `${String(job.company || '').toLowerCase()}::${String(job.jobTitle || '').toLowerCase()}`;\n  const count = seen.get(key) || 0;\n  seen.set(key, count + 1);\n  if (count > 0) duplicateCandidates++;\n  return {\n    job_title: job.jobTitle,\n    company: job.company,\n    work_model: job.workModel,\n    normalized_location: job.normalizedLocation,\n    salary_range: job.salaryRange,\n    source: job.source,\n    job_url: job.jobUrl || '',\n    application_status: job.applicationStatus,\n    match_score: job.matchScore,\n    priority: job.priority,\n    reasons: job.reasons || [],\n    risks: job.risks || [],\n    recommended_action: job.recommendedAction,\n    next_step: job.nextStep,\n    tailored_angle: job.tailoredAngle,\n    required_skills: job.requiredSkills || [],\n    preferred_skills: job.preferredSkills || [],\n    language_requirements: job.languageRequirements || [],\n    notes: job.notes,\n    raw_job: job\n  };\n});\nreturn [{ json: { ...$json, validRecords, duplicateCandidates } }];"
+        },
+        "id": "v2-11",
+        "name": "Split Valid and Rejected Records",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2100,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "INSERT INTO public.job_import_runs (\n  import_source,\n  import_file_path,\n  import_file_name,\n  import_format,\n  records_seen,\n  records_valid,\n  records_rejected,\n  duplicate_candidates,\n  status,\n  raw_summary\n) VALUES (\n  $1, $2, $3, $4, $5, $6, $7, $8, 'running', $9::jsonb\n)\nRETURNING id AS import_run_id, import_source, import_file_name, status;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[$json.importSource,$json.importFilePath,$json.importFileName,$json.importFormat,$json.recordsSeen,$json.recordsValid,$json.recordsRejected,$json.duplicateCandidates,JSON.stringify($json)]}}"
+          }
+        },
+        "id": "v2-12",
+        "name": "Create Import Run",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2300,
+          300
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "WITH src AS (\n  SELECT * FROM jsonb_to_recordset($2::jsonb) AS x(\n    job_title text,\n    company text,\n    work_model text,\n    normalized_location text,\n    salary_range text,\n    source text,\n    job_url text,\n    application_status text,\n    match_score integer,\n    priority text,\n    reasons jsonb,\n    risks jsonb,\n    recommended_action text,\n    next_step text,\n    tailored_angle text,\n    required_skills jsonb,\n    preferred_skills jsonb,\n    language_requirements jsonb,\n    notes text,\n    raw_job jsonb\n  )\n), upserted AS (\n  INSERT INTO public.job_applications (\n    job_title, company, work_model, normalized_location, salary_range, source, job_url,\n    application_status, match_score, priority, reasons, risks, recommended_action,\n    next_step, tailored_angle, required_skills, preferred_skills, language_requirements,\n    notes, raw_job\n  )\n  SELECT job_title, company, work_model, normalized_location, salary_range, source, job_url,\n    application_status, match_score, priority, reasons, risks, recommended_action,\n    next_step, tailored_angle, required_skills, preferred_skills, language_requirements,\n    notes, raw_job\n  FROM src\n  ON CONFLICT (lower(company), lower(job_title), coalesce(job_url, '')) DO UPDATE SET\n    work_model = EXCLUDED.work_model,\n    normalized_location = EXCLUDED.normalized_location,\n    salary_range = EXCLUDED.salary_range,\n    source = EXCLUDED.source,\n    application_status = EXCLUDED.application_status,\n    match_score = EXCLUDED.match_score,\n    priority = EXCLUDED.priority,\n    reasons = EXCLUDED.reasons,\n    risks = EXCLUDED.risks,\n    recommended_action = EXCLUDED.recommended_action,\n    next_step = EXCLUDED.next_step,\n    tailored_angle = EXCLUDED.tailored_angle,\n    required_skills = EXCLUDED.required_skills,\n    preferred_skills = EXCLUDED.preferred_skills,\n    language_requirements = EXCLUDED.language_requirements,\n    notes = EXCLUDED.notes,\n    raw_job = EXCLUDED.raw_job,\n    updated_at = now()\n  RETURNING (xmax = 0) AS inserted\n)\nSELECT $1::bigint AS import_run_id,\n       count(*)::integer AS upserted_rows,\n       count(*) FILTER (WHERE inserted)::integer AS inserted_rows,\n       count(*) FILTER (WHERE NOT inserted)::integer AS updated_rows\nFROM upserted;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[$json.import_run_id,JSON.stringify($('Split Valid and Rejected Records').first().json.validRecords || [])]}}"
+          }
+        },
+        "id": "v2-13",
+        "name": "Upsert Valid Rows",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2500,
+          300
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "WITH src AS (\n  SELECT * FROM jsonb_to_recordset($2::jsonb) AS x(\n    rejection_reason text,\n    raw_record jsonb\n  )\n), inserted AS (\n  INSERT INTO public.job_import_rejections (import_run_id, rejection_reason, raw_record)\n  SELECT $1::bigint, rejection_reason, raw_record\n  FROM src\n  RETURNING id\n)\nSELECT $1::bigint AS import_run_id, count(*)::integer AS rejected_rows\nFROM inserted;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[$('Create Import Run').first().json.import_run_id,JSON.stringify($('Split Valid and Rejected Records').first().json.rejectedRecords || [])]}}"
+          }
+        },
+        "id": "v2-14",
+        "name": "Insert Rejected Rows",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2700,
+          300
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "database",
+          "operation": "executeQuery",
+          "query": "UPDATE public.job_import_runs\nSET records_seen = $2,\n    records_valid = $3,\n    records_rejected = $4,\n    records_inserted = $5,\n    records_updated = $6,\n    duplicate_candidates = $7,\n    status = 'completed',\n    finished_at = now(),\n    raw_summary = $8::jsonb\nWHERE id = $1::bigint\nRETURNING *;",
+          "options": {
+            "queryBatching": "independently",
+            "queryReplacement": "={{[$('Create Import Run').first().json.import_run_id,$('Split Valid and Rejected Records').first().json.recordsSeen,$('Split Valid and Rejected Records').first().json.recordsValid,$('Split Valid and Rejected Records').first().json.recordsRejected,$('Upsert Valid Rows').first().json.inserted_rows,$('Upsert Valid Rows').first().json.updated_rows,$('Split Valid and Rejected Records').first().json.duplicateCandidates,JSON.stringify($('Split Valid and Rejected Records').first().json)]}}"
+          }
+        },
+        "id": "v2-15",
+        "name": "Update Import Run Summary",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2900,
+          300
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Local n8n Postgres"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { status: 'completed', message: 'Import audit workflow finished. Verify database rows with ./scripts/report-job-tracker.sh and ./scripts/query-job-tracker.sh', importRun: $json } }];"
+        },
+        "id": "v2-16",
+        "name": "Final Import Summary",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3100,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Manual Trigger": {
+        "main": [
+          [
+            {
+              "node": "Set Import Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Import Config": {
+        "main": [
+          [
+            {
+              "node": "Read File From CORSAIR Inbox",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read File From CORSAIR Inbox": {
+        "main": [
+          [
+            {
+              "node": "Extract Text From File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Text From File": {
+        "main": [
+          [
+            {
+              "node": "Parse JSON or CSV",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse JSON or CSV": {
+        "main": [
+          [
+            {
+              "node": "Validate Records",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Records": {
+        "main": [
+          [
+            {
+              "node": "Normalize Records",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Records": {
+        "main": [
+          [
+            {
+              "node": "Score Fit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Score Fit": {
+        "main": [
+          [
+            {
+              "node": "Classify Priority",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Classify Priority": {
+        "main": [
+          [
+            {
+              "node": "Generate Action Recommendation",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Action Recommendation": {
+        "main": [
+          [
+            {
+              "node": "Split Valid and Rejected Records",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Valid and Rejected Records": {
+        "main": [
+          [
+            {
+              "node": "Create Import Run",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Import Run": {
+        "main": [
+          [
+            {
+              "node": "Upsert Valid Rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upsert Valid Rows": {
+        "main": [
+          [
+            {
+              "node": "Insert Rejected Rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insert Rejected Rows": {
+        "main": [
+          [
+            {
+              "node": "Update Import Run Summary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Import Run Summary": {
+        "main": [
+          [
+            {
+              "node": "Final Import Summary",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": null,
+    "nodeGroups": [],
+    "pinData": {},
+    "versionCounter": 1,
+    "triggerCount": 0,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "versionMetadata": {
+      "name": null,
+      "description": null
+    }
+  }
+]

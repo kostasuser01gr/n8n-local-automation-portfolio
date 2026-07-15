@@ -1,5 +1,9 @@
 # Tutorial Draft: Local n8n Workflow With PostgreSQL Audit Trail
 
+Live portfolio: https://n8n-local-automation-portfolio.vercel.app
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+Release: https://github.com/kostasuser01gr/n8n-local-automation-portfolio/releases/tag/v0.2.0
+
 Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
 
 ## Goal

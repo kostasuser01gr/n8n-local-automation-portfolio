@@ -1,0 +1,4 @@
+registration_plate,company,vehicle_group,model,wash_type,eco,current_status,maintenance_flag,damage_flag,fuel_level,current_location,assigned_employee,notes
+N8N-1024,DemoRent,Compact,Toyota Yaris Hybrid,standard,true,available,false,false,88,Athens Station A,station-demo-01,Clean and ready
+OPS-2048,DemoRent,SUV,Kia Sportage,deep,false,inspection,true,false,41,Athens Service Bay,station-demo-02,Maintenance light reported
+QA-4096,PartnerFleet,Van,Mercedes Vito,deep,false,blocked,false,true,22,Athens Station B,station-demo-03,Damage photo required before release

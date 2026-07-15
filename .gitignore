@@ -9,6 +9,13 @@ backups/
 *.sqlite
 *.db
 node_modules/
+.next/
+.vercel/
+site/.next/
+site/.vercel/
+site/node_modules/
+site/out/
+site/tsconfig.tsbuildinfo
 .DS_Store
 credential*.json
 *credential*

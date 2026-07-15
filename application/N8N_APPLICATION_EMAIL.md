@@ -1,5 +1,9 @@
 # n8n Application Email
 
+Live portfolio: https://n8n-local-automation-portfolio.vercel.app
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+Release: https://github.com/kostasuser01gr/n8n-local-automation-portfolio/releases/tag/v0.2.0
+
 Subject: Application for n8n role - local-first workflow engineering portfolio
 
 Hello n8n team,

@@ -1,0 +1,29 @@
+{
+  "name": "n8n-local-automation-portfolio-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "build": "next build",
+    "start": "next start",
+    "validate:ui": "node scripts/validate-site.mjs"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "globals": "latest",
+    "playwright": "latest",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "latest"
+  }
+}

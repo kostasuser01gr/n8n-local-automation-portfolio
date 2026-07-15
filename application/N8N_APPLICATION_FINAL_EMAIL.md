@@ -1,5 +1,9 @@
 # n8n Application Final Email
 
+Live portfolio: https://n8n-local-automation-portfolio.vercel.app
+Repository: https://github.com/kostasuser01gr/n8n-local-automation-portfolio
+Release: https://github.com/kostasuser01gr/n8n-local-automation-portfolio/releases/tag/v0.2.0
+
 Subject: Application package - verified local-first n8n automation portfolio
 
 Hello n8n team,

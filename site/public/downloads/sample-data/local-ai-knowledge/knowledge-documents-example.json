@@ -1,0 +1,24 @@
+{
+  "sourceBatch": "portfolio-knowledge-demo-001",
+  "processingMode": "deterministic",
+  "documents": [
+    {
+      "document_id": "doc-local-ai-001",
+      "title": "PostgreSQL Import Reliability Notes",
+      "source": "local-sample",
+      "text": "Use idempotent upserts, audit records, and rejection logs for import workflows. Keep credentials out of workflow JSON. Verify row counts after each execution."
+    },
+    {
+      "document_id": "doc-local-ai-002",
+      "title": "n8n Community Draft Ideas",
+      "source": "local-sample",
+      "text": "Share a practical case study about self-hosted n8n, PostgreSQL persistence, Docker and Colima debugging, and local-first workflow evidence."
+    },
+    {
+      "document_id": "doc-local-ai-003",
+      "title": "Operations Runbook Fragment",
+      "source": "local-sample",
+      "text": "Before changing a workflow, take a local backup. After execution, run health checks, query reports, and secret scans before publishing artifacts."
+    }
+  ]
+}

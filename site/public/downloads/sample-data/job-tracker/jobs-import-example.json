@@ -1,0 +1,34 @@
+[
+  {
+    "jobTitle": "Local Automation Engineer",
+    "company": "Aegean Workflow Labs",
+    "location": "Remote",
+    "workModel": "Remote",
+    "salaryRange": "€2800 - €3600 net/month",
+    "jobUrl": "https://example.local/jobs/aegean-automation",
+    "source": "Local JSON Import",
+    "description": "Build local-first n8n and PostgreSQL automations with Python support and careful data handling.",
+    "requiredSkills": ["n8n", "PostgreSQL", "Python"],
+    "preferredSkills": ["Docker", "TypeScript"],
+    "languageRequirements": ["English", "Greek"],
+    "applicationStatus": "Imported",
+    "deadline": "2026-08-30",
+    "notes": "Strong local-first fit; use this record to test JSON imports."
+  },
+  {
+    "jobTitle": "Operations Data Assistant",
+    "company": "Harbor Metrics",
+    "location": "Athens, Greece",
+    "workModel": "Hybrid",
+    "salaryRange": "Competitive",
+    "jobUrl": "https://example.local/jobs/harbor-data",
+    "source": "Local JSON Import",
+    "description": "Maintain operations spreadsheets and automate recurring reports. Compensation details are vague.",
+    "requiredSkills": ["Excel", "Reporting"],
+    "preferredSkills": ["n8n", "PostgreSQL"],
+    "languageRequirements": ["Greek", "English"],
+    "applicationStatus": "Imported",
+    "deadline": "2026-09-05",
+    "notes": "Good Greek-language angle, but ask compensation before tailoring."
+  }
+]
